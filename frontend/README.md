@@ -35,8 +35,8 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
-## Docker compose
+## Local Docker
 ```
 $ docker build -t tarpit
-$ docker run -d -p 3000:3000 --name tarpit-node 
+$ docker run -d -p 3000:3000 --name tarpit 
 ```

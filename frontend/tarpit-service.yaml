@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tarpit-linux-service
+  namespace: tarpit
+  labels:
+    app: tarpit-linux-app
+spec:
+  selector:
+    app: tarpit-linux-app
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000

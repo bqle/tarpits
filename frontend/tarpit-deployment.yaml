@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tarpit-linux-deployment
+  namespace: tarpit
+  labels:
+    app: tarpit-linux-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: tarpit-linux-app
+  template:
+    metadata:
+      labels:
+        app: tarpit-linux-app
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                - amd64
+                - arm64
+      containers:
+      - name: tarpit-frontend
+        image: 471112874149.dkr.ecr.us-east-2.amazonaws.com/bqle/tarpits:latest
+        ports:
+        - containerPort: 3000
+        imagePullPolicy: Always
+      nodeSelector:
+        kubernetes.io/os: linux
