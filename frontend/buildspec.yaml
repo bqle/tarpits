@@ -18,6 +18,5 @@ phases:
       - echo Pushing the Docker image...
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
       - echo Deploying Kubernetes...
-      - aws sts get-caller-identity
       - aws eks update-kubeconfig --region us-east-2 --name tarpits
       - kubectl -n tarpit rollout restart deployment tarpit-linux-deployment
