@@ -6,7 +6,7 @@ export default function Home() {
     <main className={styles.main}>
       <div className={styles.description}>
         <p>
-          How about I don't get started by editiing??? &nbsp;
+          How about I dont get started by editiing??? &nbsp;
           <code className={styles.code}>src/app/page.tsx</code>
         </p>
         <div>
