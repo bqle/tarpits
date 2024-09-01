@@ -1,95 +1,119 @@
 import Image from "next/image";
 import styles from "./page.module.css";
 
-export default function Home() {
+const SearchBar = () => {
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          How about I dont get started by editiing??? &nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div className={styles.search_bar}>
+      <Image
+        width={20}
+        height={20}
+        src="/search-icon.png"
+        alt="Search icon"
+        priority
+      />
+    </div>
+  );
+};
+
+const Result = () => {
+  return (
+    <div className={styles.search_result}>
+      <div className={styles.result_header}>
+        <div className={styles.flex_baseline}>
+          <p style={{ marginRight: "5px" }}>Tarpit #123:</p>
+          <h3>Digitalized Nameplate</h3>
+        </div>
+        <div className={styles.flex_baseline}>
+          <Image
+            src="/geopin-black.png"
+            width={14}
+            height={14}
+            alt="pin"
+            priority
+            style={{ marginRight: "5px" }}
+          />
+          <p>Minnesota, USA</p>
         </div>
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+      <div className={styles.result_desc}>
+        <p>
+          Who wouldn’t want to store the memories of their loved ones? We build
+          a website for people to create books about their loved ones’ stories
+        </p>
       </div>
+    </div>
+  );
+};
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+const SearchResultList = () => {
+  return (
+    <div className={styles.search_list}>
+      <ul>
+        <li>
+          <Result />
+        </li>
+        <li>
+          <Result />
+        </li>
+        <li>
+          <Result />
+        </li>
+        <li>
+          <Result />
+        </li>
+        <li>
+          <Result />
+        </li>
+        <li>
+          <Result />
+        </li>
+        <li>
+          <Result />
+        </li>
+      </ul>
+    </div>
+  );
+};
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
+const Search = () => {
+  return (
+    <div className={styles.search_container}>
+      <SearchBar />
+      <SearchResultList />
+    </div>
+  );
+};
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+const Info = () => {
+  return (
+    <div className={styles.info_container}>
+      <Image
+        width={150}
+        height={150}
+        src="/logo.png"
+        alt="Tarpits logo"
+        priority
+      />
+      <p className={styles.logo_title}>Tarpits</p>
+      <p className={styles.info_desc}>
+        Tarpits are ideas that on the surface seem like fantastic opportunities
+        but is actually a trap for entrepreneurs. Many flock to them for its
+        appealing odor, often getting trapped in it, wasting precious resources
+        and time.
+        <br />
+        <br />
+        We’re collecting stories of tarpits you encountered on your business
+        journeys. We’d love to hear the ups and downs, why the idea attracted
+        you in the first place, and why you think this was a tarpit.
+      </p>
+    </div>
+  );
+};
+export default function Home() {
+  return (
+    <main className={styles.container}>
+      <Info />
+      <Search />
     </main>
   );
 }
