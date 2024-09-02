@@ -5,7 +5,7 @@ const StatusColumn = () => {
   return (
     <div className={styles.status_column}>
       <Image src="/logo.png" alt="logo" width={100} height={100} priority />
-      <p>Saving...</p>
+      <p>Saved</p>
     </div>
   );
 };
@@ -66,6 +66,40 @@ const TarpitForm = () => {
           "Any relevant factors outside your control",
         ]}
       />
+      <FormRow
+        question="What is your party story?"
+        points={[
+          "Key milestones",
+          "Vital moments for the team",
+          "When did you consider quitting?",
+        ]}
+      />
+      <FormRow
+        question="What lessons would you pass on to future founders?"
+        points={[
+          "Be as specific about your industry and case as possible",
+          "Actions that could have been taken",
+          "Decisions that would have been made differently",
+        ]}
+      />
+    </div>
+  );
+};
+
+const SubmitForm = () => {
+  return (
+    <div className={styles.submit_form}>
+      <input placeholder="Country..." />
+      <input placeholder="Year..." />
+      <input placeholder="Email..." />
+      <Image
+        src="/paper-airplane.png"
+        alt="Send"
+        width={30}
+        height={30}
+        priority
+      />
+      <p>Post</p>
     </div>
   );
 };
@@ -75,6 +109,7 @@ export default function CreatePost() {
     <main className={styles.container}>
       <StatusColumn />
       <TarpitForm />
+      <SubmitForm />
     </main>
   );
 }

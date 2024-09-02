@@ -23,20 +23,21 @@
   width: 100%;
 }
 
-.form_header input {
-  font-family: "Times New Roman", Times, serif;
-  font-size: 48px;
-  outline: none;
-  border: 0;
-  font-weight: normal;
-  margin-bottom: 0px;
-  color: hsl(213, 90%, 20%);
-}
-
 .form_header p {
   font-size: 24px;
   margin-bottom: 0px;
   color: hsl(195, 21%, 30%);
+}
+
+.form_header h1 {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 48px;
+  outline: none;
+  border: 0;
+  margin-left: 10px;
+  font-weight: normal;
+  margin-bottom: 0px;
+  color: hsl(213, 90%, 20%);
 }
 
 .flex_baseline {
@@ -73,14 +74,15 @@
 .form_answer {
   width: 60%;
   padding: 5px 10px 5px 5px;
+  margin: 0;
   border: 0;
+  border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   outline: none;
   resize: none;
   overflow-y: auto;
   overflow-x: hidden;
   font-size: 16px;
-  box-sizing: border-box;
   font-family: "Times New Roman", Times, serif;
   color: hsl(213, 90%, 20%);
   height: 150px;
@@ -103,7 +105,7 @@
 
 .submit_form p {
   margin: 0;
-  font-size: 12px;
+  font-size: 15px;
 }
 
 .submit_form img {
