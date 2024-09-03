@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./createpost.module.css";
+import React, { useRef, useEffect, useState } from "react";
 
 const StatusColumn = () => {
   return (
@@ -9,17 +12,36 @@ const StatusColumn = () => {
         <Image src="/logo.png" alt="logo" width={100} height={100} priority />
         <p className={styles.logo_title}>Tarpits</p>
       </Link>
-      <p className={styles.save_status}>Saved</p>
+      <p className={styles.save_status}>Autosaved.</p>
     </div>
   );
 };
 
 interface FormRowI {
+  id: number;
   question: string;
   points: Array<string>;
 }
 
-const FormRow = ({ question, points }: FormRowI) => {
+const FormRow = ({ id, question, points }: FormRowI) => {
+  const [textareaValue, setTextareaValue] = useState("");
+  const textareaRef: any = useRef(null);
+
+  // Loads saved values from cookies
+  useEffect(() => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; textareaValue${id}=`);
+    const savedValue = parts.pop()?.split(";").shift();
+    if (savedValue) {
+      setTextareaValue(savedValue);
+    }
+  }, []);
+
+  // Saves values to cookies
+  function handleBlur() {
+    document.cookie = `textareaValue${id}=${textareaValue}; path=/`;
+  }
+
   return (
     <div className={styles.form_row}>
       <div className={styles.form_question}>
@@ -30,7 +52,14 @@ const FormRow = ({ question, points }: FormRowI) => {
           ))}
         </ul>
       </div>
-      <textarea className={styles.form_answer} placeholder="Your thoughts" />
+      <textarea
+        ref={textareaRef}
+        value={textareaValue}
+        onChange={(e) => setTextareaValue(e.target.value)}
+        onBlur={handleBlur}
+        className={styles.form_answer}
+        placeholder="Your thoughts"
+      />
     </div>
   );
 };
@@ -45,6 +74,7 @@ const TarpitForm = () => {
       </div>
       {/* Row questions */}
       <FormRow
+        id={1}
         question="Who were your cofounders?"
         points={[
           "Individual experience",
@@ -53,6 +83,7 @@ const TarpitForm = () => {
         ]}
       />
       <FormRow
+        id={2}
         question="What was your idea?"
         points={[
           "Product / service",
@@ -62,6 +93,7 @@ const TarpitForm = () => {
         ]}
       />
       <FormRow
+        id={3}
         question="What was the surrounding business environment?"
         points={[
           "Regulatory environment",
@@ -70,6 +102,7 @@ const TarpitForm = () => {
         ]}
       />
       <FormRow
+        id={4}
         question="What is your party story?"
         points={[
           "Key milestones",
@@ -78,6 +111,7 @@ const TarpitForm = () => {
         ]}
       />
       <FormRow
+        id={5}
         question="What lessons would you pass on to future founders?"
         points={[
           "Be as specific about your industry and case as possible",
