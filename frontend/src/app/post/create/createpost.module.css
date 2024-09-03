@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Kelly+Slab&display=swap");
+
 .container {
   display: flex;
   justify-content: center;
@@ -7,9 +9,21 @@
   font-family: "Times New Roman", Times, serif;
 }
 
-.status_column p {
+.status_column {
+  margin-right: 20px;
+}
+
+.save_status {
   color: grey;
-  margin-right: 80px;
+}
+
+.logo_title {
+  margin: 0px;
+  font-family: "Kelly Slab", cursive;
+  font-size: 24px;
+  font-style: normal;
+  text-decoration: none;
+  color: hsl(195, 21%, 30%);
 }
 
 .form {
@@ -17,7 +31,6 @@
 }
 
 .form_header {
-  display: flex;
   align-items: baseline;
   justify-content: space-between;
   width: 100%;
@@ -34,7 +47,7 @@
 }
 
 .form_header p {
-  font-size: 24px;
+  font-size: 20px;
   margin-bottom: 0px;
   color: hsl(195, 21%, 30%);
 }
@@ -111,5 +124,5 @@
 }
 
 .submit_form img:hover {
-  transform: scale(1.1);
+  transform: scale(1.3);
 }

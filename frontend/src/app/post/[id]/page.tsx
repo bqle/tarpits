@@ -1,11 +1,14 @@
 import Image from "next/image";
+import Link from "next/link";
 import styles from "./viewpost.module.css";
 
 const StatusColumn = () => {
   return (
     <div className={styles.status_column}>
-      <Image src="/logo.png" alt="logo" width={100} height={100} priority />
-      <p>Saved</p>
+      <Link href="/" style={{ textDecoration: "none" }}>
+        <Image src="/logo.png" alt="logo" width={100} height={100} priority />
+        <p className={styles.logo_title}>Tarpits</p>
+      </Link>
     </div>
   );
 };
@@ -52,7 +55,7 @@ const TarpitForm = (params: ViewPostI) => {
       {/* Header */}
       <div className={styles.form_header}>
         <div className={styles.flex_baseline}>
-          <p>Tarpit #{id}: </p>
+          <p>#{id}: </p>
           <h1>Digitalized Gravestone</h1>
         </div>
       </div>
@@ -108,13 +111,7 @@ const SubmitForm = () => {
       <p>US</p>
       <p>2025</p>
       <p>bqle@seas.upenn.edu</p>
-      <Image
-        src="/copy-link.png"
-        alt="Send"
-        width={25}
-        height={25}
-        priority
-      />
+      <Image src="/copy-link.png" alt="Send" width={25} height={25} priority />
     </div>
   );
 };

@@ -80,6 +80,11 @@
   color: hsl(139, 21%, 40%);
 }
 
+.result a {
+  text-decoration: none;
+  color: inherit;
+}
+
 .result_header {
   display: flex;
   align-items: baseline;
@@ -126,4 +131,8 @@
 
 .menu {
   margin-top: 90px;
+}
+
+.menu img:hover {
+  transform: scale(1.3);
 }

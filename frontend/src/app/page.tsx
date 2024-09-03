@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Image from "next/image";
 import styles from "./page.module.css";
 
@@ -17,31 +18,35 @@ const SearchBar = () => {
 };
 
 const Result = () => {
+  const id = 1;
   return (
     <li className={styles.result}>
-      <div className={styles.result_header}>
-        <div className={styles.flex_baseline}>
-          <p style={{ marginRight: "5px" }}>Tarpit #123:</p>
-          <h3>Digitalized Nameplate</h3>
+      <Link href={`/post/${id}`}>
+        <div className={styles.result_header}>
+          <div className={styles.flex_baseline}>
+            <p style={{ marginRight: "5px" }}>Tarpit #123:</p>
+            <h3>Digitalized Nameplate</h3>
+          </div>
+          <div className={styles.flex_baseline} style={{ marginRight: "10px" }}>
+            <Image
+              src="/geopin-black.png"
+              width={14}
+              height={14}
+              alt="pin"
+              priority
+              style={{ marginRight: "5px" }}
+            />
+            <p>Minnesota, USA</p>
+          </div>
         </div>
-        <div className={styles.flex_baseline} style={{ marginRight: "10px" }}>
-          <Image
-            src="/geopin-black.png"
-            width={14}
-            height={14}
-            alt="pin"
-            priority
-            style={{ marginRight: "5px" }}
-          />
-          <p>Minnesota, USA</p>
+        <div className={styles.result_desc}>
+          <p>
+            Who wouldn’t want to store the memories of their loved ones? We
+            build a website for people to create books about their loved ones’
+            stories
+          </p>
         </div>
-      </div>
-      <div className={styles.result_desc}>
-        <p>
-          Who wouldn’t want to store the memories of their loved ones? We build
-          a website for people to create books about their loved ones’ stories
-        </p>
-      </div>
+      </Link>
     </li>
   );
 };
@@ -74,13 +79,15 @@ const Search = () => {
 const Info = () => {
   return (
     <div className={styles.info_container}>
-      <Image
-        width={150}
-        height={150}
-        src="/logo.png"
-        alt="Tarpits logo"
-        priority
-      />
+      <Link href="/">
+        <Image
+          width={150}
+          height={150}
+          src="/logo.png"
+          alt="Tarpits logo"
+          priority
+        />
+      </Link>
       <p className={styles.logo_title}>Tarpits</p>
       <div className={styles.info_desc}>
         <p style={{ margin: "0px" }}>
@@ -102,7 +109,9 @@ const Info = () => {
 const Menu = () => {
   return (
     <div className={styles.menu}>
-      <Image src="/writing.png" height={20} width={20} alt="Add" priority />
+      <Link href="/post/create">
+        <Image src="/writing.png" height={20} width={20} alt="Add" priority />
+      </Link>
     </div>
   );
 };

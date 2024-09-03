@@ -1,11 +1,15 @@
 import Image from "next/image";
+import Link from "next/link";
 import styles from "./createpost.module.css";
 
 const StatusColumn = () => {
   return (
     <div className={styles.status_column}>
-      <Image src="/logo.png" alt="logo" width={100} height={100} priority />
-      <p>Saved</p>
+      <Link href="/" style={{ textDecoration: "none" }}>
+        <Image src="/logo.png" alt="logo" width={100} height={100} priority />
+        <p className={styles.logo_title}>Tarpits</p>
+      </Link>
+      <p className={styles.save_status}>Saved</p>
     </div>
   );
 };
@@ -36,9 +40,8 @@ const TarpitForm = () => {
     <div className={styles.form}>
       {/* Header */}
       <div className={styles.form_header}>
-        <div className={styles.flex_baseline}>
-          <input placeholder="Tarpit name..." />
-        </div>
+        <p>Write about your own tarpit encounter: </p>
+        <input placeholder="Tarpit name..." />
       </div>
       {/* Row questions */}
       <FormRow
