@@ -1,6 +1,8 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./viewpost.module.css";
+import { useState } from "react";
 
 const StatusColumn = () => {
   return (
@@ -105,13 +107,52 @@ const TarpitForm = (params: ViewPostI) => {
   );
 };
 
-const SubmitForm = () => {
+const ActionForm = () => {
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
+
+  const handleCopy: any = (e: MouseEvent) => {
+    navigator.clipboard
+      .writeText("Copied text")
+      .then(() => {
+        const x = e.clientX;
+        const y = e.clientY;
+        setPopupPosition({ x, y });
+
+        setShowPopup(true);
+        setTimeout(() => {
+          setShowPopup(false);
+        }, 300);
+      })
+      .catch((err) => {
+        console.error("Failed to copy: ", err);
+      });
+  };
+
   return (
     <div className={styles.submit_form}>
       <p>US</p>
       <p>2025</p>
       <p>bqle@seas.upenn.edu</p>
-      <Image src="/copy-link.png" alt="Send" width={25} height={25} priority />
+      <Image
+        onClick={handleCopy}
+        src="/copy-link.png"
+        alt="Copy"
+        width={25}
+        height={25}
+        priority
+      />
+      {showPopup && (
+        <div
+          className={styles.button_popup}
+          style={{
+            top: `${popupPosition.y}px`,
+            left: `${popupPosition.x}px`,
+          }}
+        >
+          Saved link to clipboard
+        </div>
+      )}
     </div>
   );
 };
@@ -119,14 +160,14 @@ const SubmitForm = () => {
 interface ViewPostI {
   id: string;
 }
-export default function ViewPost({ params }) {
+export default function ViewPost({ params }: { params: ViewPostI }) {
   const { id } = params;
 
   return (
     <main className={styles.container}>
       <StatusColumn />
       <TarpitForm id={id} />
-      <SubmitForm />
+      <ActionForm />
     </main>
   );
 }

@@ -27,7 +27,6 @@ const FormRow = ({ id, question, points }: FormRowI) => {
   const [textareaValue, setTextareaValue] = useState("");
   const textareaRef: any = useRef(null);
 
-  // Loads saved values from cookies
   useEffect(() => {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; textareaValue${id}=`);
@@ -37,7 +36,6 @@ const FormRow = ({ id, question, points }: FormRowI) => {
     }
   }, []);
 
-  // Saves values to cookies
   function handleBlur() {
     document.cookie = `textareaValue${id}=${textareaValue}; path=/`;
   }
@@ -123,20 +121,62 @@ const TarpitForm = () => {
   );
 };
 
+function isValidEmail(email: string) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
 const SubmitForm = () => {
+  const [submitErrs, setSubmitErrs] = useState(Array<string>());
+
+  const handleSubmit: any = (e: MouseEvent) => {
+    let yearValue = (document.getElementById("year") as HTMLInputElement).value;
+    let emailValue = (document.getElementById("email") as HTMLInputElement)
+      .value;
+
+    let errs: Array<string> = [];
+    if (yearValue != "") {
+      let yearNumber = parseInt(yearValue, 10);
+      if (!yearNumber) {
+        errs.push("Year is not an integer");
+      }
+      if (yearNumber < 1900 || yearNumber > 2024) {
+        errs.push("Make sure year is in a close range");
+      }
+    }
+    if (emailValue != "") {
+      if (!isValidEmail(emailValue)) {
+        errs.push("Invalid email address");
+      }
+    }
+
+    setSubmitErrs(errs);
+    if (errs.length == 0) {
+      // Submit
+      console.log("submit");
+    }
+  };
+
   return (
     <div className={styles.submit_form}>
-      <input placeholder="Country..." />
-      <input placeholder="Year..." />
-      <input placeholder="Email..." />
-      <Image
-        src="/paper-airplane.png"
-        alt="Send"
-        width={30}
-        height={30}
-        priority
-      />
-      <p>Post</p>
+      <input id="year" placeholder="Year..." />
+      <input id="email" placeholder="Email..." />
+      <div onClick={handleSubmit}>
+        <Image
+          src="/paper-airplane.png"
+          alt="Send"
+          width={30}
+          height={30}
+          priority
+        />
+        <p>Post</p>
+        {submitErrs.length > 0 &&
+          submitErrs.map((errStr, index) => (
+            <li className={styles.errorStr} key={index}>
+              {errStr}
+            </li>
+          ))}
+      </div>
     </div>
   );
 };

@@ -125,3 +125,14 @@
 .submit_form img:hover {
   transform: scale(1.1);
 }
+
+.button_popup {
+  position: fixed;
+  background-color: hsl(21, 11%, 90%);
+  color: hsl(21, 11%, 20%);
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  opacity: 0.9;
+  z-index: 10;
+}
