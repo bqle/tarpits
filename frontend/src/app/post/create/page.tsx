@@ -4,6 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "./createpost.module.css";
 import React, { useRef, useEffect, useState } from "react";
+import { setExample, postTarpit } from "../../../utils/firebase";
+import type { PostI } from "@/utils/schema";
+
+function getAnswerElementId(id: number) {
+  return `answer-${id}`;
+}
 
 const StatusColumn = () => {
   return (
@@ -34,7 +40,7 @@ const FormRow = ({ id, question, points }: FormRowI) => {
     if (savedValue) {
       setTextareaValue(savedValue);
     }
-  }, []);
+  }, [id]);
 
   function handleBlur() {
     document.cookie = `textareaValue${id}=${textareaValue}; path=/`;
@@ -51,6 +57,7 @@ const FormRow = ({ id, question, points }: FormRowI) => {
         </ul>
       </div>
       <textarea
+        id={getAnswerElementId(id)}
         ref={textareaRef}
         value={textareaValue}
         onChange={(e) => setTextareaValue(e.target.value)}
@@ -62,6 +69,7 @@ const FormRow = ({ id, question, points }: FormRowI) => {
   );
 };
 
+const NUMBER_OF_QUESTIONS = 5;
 const TarpitForm = () => {
   return (
     <div className={styles.form}>
@@ -126,6 +134,17 @@ function isValidEmail(email: string) {
   return emailRegex.test(email);
 }
 
+function getAnswers() {
+  let answers: Array<string> = [];
+  for (let i = 1; i <= NUMBER_OF_QUESTIONS; i++) {
+    let textareaValue = (
+      document.getElementById(getAnswerElementId(i)) as HTMLTextAreaElement
+    ).value;
+    answers.push(textareaValue);
+  }
+  return answers;
+}
+
 const SubmitForm = () => {
   const [submitErrs, setSubmitErrs] = useState(Array<string>());
 
@@ -135,8 +154,9 @@ const SubmitForm = () => {
       .value;
 
     let errs: Array<string> = [];
+    let yearNumber = null;
     if (yearValue != "") {
-      let yearNumber = parseInt(yearValue, 10);
+      yearNumber = parseInt(yearValue, 10);
       if (!yearNumber) {
         errs.push("Year is not an integer");
       }
@@ -152,8 +172,11 @@ const SubmitForm = () => {
 
     setSubmitErrs(errs);
     if (errs.length == 0) {
-      // Submit
-      console.log("submit");
+      postTarpit({
+        year: yearNumber,
+        email: emailValue,
+        answers: getAnswers(),
+      });
     }
   };
 
