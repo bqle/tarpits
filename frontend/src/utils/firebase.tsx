@@ -22,9 +22,9 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const counterOperation = (func: any) => {
+function counterOperation(func: any): Promise<boolean> {
   const counterRef = ref(db, "counter");
-  runTransaction(counterRef, (currentValue) => {
+  return runTransaction(counterRef, (currentValue) => {
     if (currentValue === null) {
       return 1;
     }
@@ -34,26 +34,24 @@ const counterOperation = (func: any) => {
       if (result.committed) {
         console.log("Transaction committed:", result.snapshot.val());
         func(result.snapshot.val());
+        return true;
       } else {
         console.log("Transaction not committed");
+        return false;
       }
     })
     .catch((error) => {
       console.error("Transaction failed:", error);
+      return false;
     });
-};
+}
 
-const postTarpit = (content: PostI) => {
-  const { year, email, answers } = content;
+function postTarpit(content: PostI): Promise<boolean> {
   const postWithId = (value: number) => {
-    set(ref(db, `users/post/${value}`), {
-      year: year,
-      email: email,
-      answers: answers,
-    });
+    set(ref(db, `users/post/${value}`), content);
   };
-  counterOperation(postWithId);
-};
+  return counterOperation(postWithId);
+}
 
 const setExample = () => {
   set(ref(db, "users/bqle"), {

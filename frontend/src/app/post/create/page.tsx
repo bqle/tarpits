@@ -3,12 +3,24 @@
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./createpost.module.css";
-import React, { useRef, useEffect, useState } from "react";
-import { setExample, postTarpit } from "../../../utils/firebase";
-import type { PostI } from "@/utils/schema";
+import React, { useState } from "react";
+import { postTarpit } from "../../../utils/firebase";
+import { CookieSaver } from "@/components/CookieSaver";
 
 function getAnswerElementId(id: number) {
   return `answer-${id}`;
+}
+
+function onBlurCookieSaver(elementId: string) {
+  let onBlur = () => {
+    let stringValue = (
+      document.getElementById(elementId) as
+        | HTMLTextAreaElement
+        | HTMLInputElement
+    ).value;
+    document.cookie = `${elementId}=${stringValue}; path=/`;
+  };
+  return onBlur;
 }
 
 const StatusColumn = () => {
@@ -30,21 +42,7 @@ interface FormRowI {
 }
 
 const FormRow = ({ id, question, points }: FormRowI) => {
-  const [textareaValue, setTextareaValue] = useState("");
-  const textareaRef: any = useRef(null);
-
-  useEffect(() => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; textareaValue${id}=`);
-    const savedValue = parts.pop()?.split(";").shift();
-    if (savedValue) {
-      setTextareaValue(savedValue);
-    }
-  }, [id]);
-
-  function handleBlur() {
-    document.cookie = `textareaValue${id}=${textareaValue}; path=/`;
-  }
+  const textareaId = getAnswerElementId(id);
 
   return (
     <div className={styles.form_row}>
@@ -56,15 +54,9 @@ const FormRow = ({ id, question, points }: FormRowI) => {
           ))}
         </ul>
       </div>
-      <textarea
-        id={getAnswerElementId(id)}
-        ref={textareaRef}
-        value={textareaValue}
-        onChange={(e) => setTextareaValue(e.target.value)}
-        onBlur={handleBlur}
-        className={styles.form_answer}
-        placeholder="Your thoughts"
-      />
+      <CookieSaver elementId={textareaId}>
+        <textarea className={styles.form_answer} placeholder="Your thoughts" />
+      </CookieSaver>
     </div>
   );
 };
@@ -76,11 +68,16 @@ const TarpitForm = () => {
       {/* Header */}
       <div className={styles.form_header}>
         <p>Write about your own tarpit encounter: </p>
-        <input placeholder="Tarpit name..." />
+        <CookieSaver elementId="post-title">
+          <input
+            onBlur={onBlurCookieSaver("post-title")}
+            placeholder="Tarpit name..."
+          />
+        </CookieSaver>
       </div>
       {/* Row questions */}
       <FormRow
-        id={1}
+        id={0}
         question="Who were your cofounders?"
         points={[
           "Individual experience",
@@ -89,7 +86,7 @@ const TarpitForm = () => {
         ]}
       />
       <FormRow
-        id={2}
+        id={1}
         question="What was your idea?"
         points={[
           "Product / service",
@@ -99,7 +96,7 @@ const TarpitForm = () => {
         ]}
       />
       <FormRow
-        id={3}
+        id={2}
         question="What was the surrounding business environment?"
         points={[
           "Regulatory environment",
@@ -108,7 +105,7 @@ const TarpitForm = () => {
         ]}
       />
       <FormRow
-        id={4}
+        id={3}
         question="What is your party story?"
         points={[
           "Key milestones",
@@ -117,7 +114,7 @@ const TarpitForm = () => {
         ]}
       />
       <FormRow
-        id={5}
+        id={4}
         question="What lessons would you pass on to future founders?"
         points={[
           "Be as specific about your industry and case as possible",
@@ -136,7 +133,7 @@ function isValidEmail(email: string) {
 
 function getAnswers() {
   let answers: Array<string> = [];
-  for (let i = 1; i <= NUMBER_OF_QUESTIONS; i++) {
+  for (let i = 0; i < NUMBER_OF_QUESTIONS; i++) {
     let textareaValue = (
       document.getElementById(getAnswerElementId(i)) as HTMLTextAreaElement
     ).value;
@@ -145,17 +142,41 @@ function getAnswers() {
   return answers;
 }
 
+function clearPostCookies() {
+  const cookies = document.cookie.split(";");
+
+  cookies.forEach((cookie) => {
+    const [cookieName] = cookie.split("=");
+    const trimmedCookieName = cookieName.trim();
+
+    if (
+      trimmedCookieName === "post-title" ||
+      trimmedCookieName === "year" ||
+      trimmedCookieName === "email" ||
+      trimmedCookieName.startsWith("textareaValue")
+    ) {
+      document.cookie = `${trimmedCookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+    }
+  });
+}
+
 const SubmitForm = () => {
   const [submitErrs, setSubmitErrs] = useState(Array<string>());
 
   const handleSubmit: any = (e: MouseEvent) => {
+    let title = (document.getElementById("post-title") as HTMLInputElement)
+      .value;
     let yearValue = (document.getElementById("year") as HTMLInputElement).value;
     let emailValue = (document.getElementById("email") as HTMLInputElement)
       .value;
 
     let errs: Array<string> = [];
     let yearNumber = null;
-    if (yearValue != "") {
+    if (!title) {
+      errs.push("Add a none-empty title");
+    }
+
+    if (yearValue) {
       yearNumber = parseInt(yearValue, 10);
       if (!yearNumber) {
         errs.push("Year is not an integer");
@@ -164,7 +185,7 @@ const SubmitForm = () => {
         errs.push("Make sure year is in a close range");
       }
     }
-    if (emailValue != "") {
+    if (emailValue) {
       if (!isValidEmail(emailValue)) {
         errs.push("Invalid email address");
       }
@@ -173,17 +194,28 @@ const SubmitForm = () => {
     setSubmitErrs(errs);
     if (errs.length == 0) {
       postTarpit({
+        title: title,
         year: yearNumber,
         email: emailValue,
         answers: getAnswers(),
+      }).then((success) => {
+        if (success) {
+          clearPostCookies();
+        } else {
+          alert("Unsuccessful post");
+        }
       });
     }
   };
 
   return (
     <div className={styles.submit_form}>
-      <input id="year" placeholder="Year..." />
-      <input id="email" placeholder="Email..." />
+      <CookieSaver elementId="year">
+        <input placeholder="Year..." />
+      </CookieSaver>
+      <CookieSaver elementId="email">
+        <input placeholder="Email..." />
+      </CookieSaver>
       <div onClick={handleSubmit}>
         <Image
           src="/paper-airplane.png"
