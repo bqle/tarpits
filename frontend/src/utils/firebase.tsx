@@ -1,6 +1,13 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getDatabase, runTransaction, ref, set } from "firebase/database";
+import {
+  getDatabase,
+  runTransaction,
+  ref,
+  get,
+  set,
+  child,
+} from "firebase/database";
 import type { PostI } from "./schema";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -53,11 +60,22 @@ function postTarpit(content: PostI): Promise<boolean> {
   return counterOperation(postWithId);
 }
 
-const setExample = () => {
-  set(ref(db, "users/bqle"), {
-    username: "hello!",
-    email: "bqle@seas.upenn.edu",
-  });
-};
+function getTarpit(postId: number): Promise<PostI | null> {
+  const path = `users/post/${postId}`;
+  const dbRef = ref(db);
+  return get(child(dbRef, path))
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        console.log("Data:", snapshot.val());
+        return snapshot.val(); // Returns the data at the specified path
+      } else {
+        console.log("No data available at this path.");
+        return null;
+      }
+    })
+    .catch((error) => {
+      return null;
+    });
+}
 
-export { app, setExample, postTarpit };
+export { app, postTarpit, getTarpit };

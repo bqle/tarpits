@@ -11,18 +11,6 @@ function getAnswerElementId(id: number) {
   return `answer-${id}`;
 }
 
-function onBlurCookieSaver(elementId: string) {
-  let onBlur = () => {
-    let stringValue = (
-      document.getElementById(elementId) as
-        | HTMLTextAreaElement
-        | HTMLInputElement
-    ).value;
-    document.cookie = `${elementId}=${stringValue}; path=/`;
-  };
-  return onBlur;
-}
-
 const StatusColumn = () => {
   return (
     <div className={styles.status_column}>
@@ -70,7 +58,6 @@ const TarpitForm = () => {
         <p>Write about your own tarpit encounter: </p>
         <CookieSaver elementId="post-title">
           <input
-            onBlur={onBlurCookieSaver("post-title")}
             placeholder="Tarpit name..."
           />
         </CookieSaver>
@@ -182,7 +169,7 @@ const SubmitForm = () => {
         errs.push("Year is not an integer");
       }
       if (yearNumber < 1900 || yearNumber > 2024) {
-        errs.push("Make sure year is in a close range");
+        errs.push("Make sure year is in a close range (1900-2024)");
       }
     }
     if (emailValue) {
