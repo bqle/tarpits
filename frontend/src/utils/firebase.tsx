@@ -7,6 +7,13 @@ import {
   get,
   set,
   child,
+  orderByChild,
+  limitToFirst,
+  query,
+  limitToLast,
+  startAt,
+  orderByKey,
+  startAfter,
 } from "firebase/database";
 import type { PostI } from "./schema";
 
@@ -54,8 +61,9 @@ function counterOperation(func: any): Promise<boolean> {
 }
 
 function postTarpit(content: PostI): Promise<boolean> {
-  const postWithId = (value: number) => {
-    set(ref(db, `users/post/${value}`), content);
+  const postWithId = (postId: number) => {
+    content.id = postId;
+    set(ref(db, `users/post/${postId}`), content);
   };
   return counterOperation(postWithId);
 }
@@ -78,4 +86,22 @@ function getTarpit(postId: number): Promise<PostI | null> {
     });
 }
 
-export { app, postTarpit, getTarpit };
+async function getRecentTarpits(sinceExclusive: number = -1) {
+  const itemsRef = ref(db, "users/post");
+  const topItemsQuery = query(
+    itemsRef,
+    orderByChild("id"),
+    startAfter(null),
+    limitToLast(5)
+  );
+
+  const snapshot = await get(topItemsQuery);
+  if (snapshot.exists()) {
+    const data = snapshot.val();
+    return data;
+  } else {
+    return [];
+  }
+}
+
+export { app, postTarpit, getTarpit, getRecentTarpits };

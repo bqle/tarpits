@@ -209,7 +209,7 @@ export default function ViewPost({ params }: { params: ViewPostI }) {
       )}
       {loadingState === LoadingState.ERROR && (
         <div>
-          <h3>Sorry! Some error occurred</h3>
+          <h3>Sorry! Your post could not be found</h3>
           <h3>&lt;------</h3>
         </div>
       )}

@@ -1,4 +1,5 @@
 interface PostI {
+  id: number | null;
   title: string | null;
   year: number | null;
   email: string | null;

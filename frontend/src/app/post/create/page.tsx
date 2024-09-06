@@ -57,9 +57,7 @@ const TarpitForm = () => {
       <div className={styles.form_header}>
         <p>Write about your own tarpit encounter: </p>
         <CookieSaver elementId="post-title">
-          <input
-            placeholder="Tarpit name..."
-          />
+          <input placeholder="Tarpit name..." />
         </CookieSaver>
       </div>
       {/* Row questions */}
@@ -140,7 +138,7 @@ function clearPostCookies() {
       trimmedCookieName === "post-title" ||
       trimmedCookieName === "year" ||
       trimmedCookieName === "email" ||
-      trimmedCookieName.startsWith("textareaValue")
+      trimmedCookieName.startsWith("answer-")
     ) {
       document.cookie = `${trimmedCookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
     }
@@ -181,6 +179,7 @@ const SubmitForm = () => {
     setSubmitErrs(errs);
     if (errs.length == 0) {
       postTarpit({
+        id: null,
         title: title,
         year: yearNumber,
         email: emailValue,

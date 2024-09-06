@@ -1,6 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./page.module.css";
+import { useEffect, useState } from "react";
+import { getRecentTarpits } from "@/utils/firebase";
+import { PostI } from "@/utils/schema";
 
 const SearchBar = () => {
   return (
@@ -17,34 +22,36 @@ const SearchBar = () => {
   );
 };
 
-const Result = () => {
-  const id = 1;
+interface PostPreviewI {
+  id: number;
+  title: string;
+  year: number;
+  desc: string;
+}
+
+const PostPreview = ({ id, title, year, desc }: PostPreviewI) => {
   return (
     <li className={styles.result}>
       <Link href={`/post/${id}`}>
         <div className={styles.result_header}>
           <div className={styles.flex_baseline}>
-            <p style={{ marginRight: "5px" }}>Tarpit #123:</p>
-            <h3>Digitalized Nameplate</h3>
+            <p style={{ marginRight: "5px" }}>Tarpit #{id}:</p>
+            <h3>{title}</h3>
           </div>
           <div className={styles.flex_baseline} style={{ marginRight: "10px" }}>
             <Image
-              src="/geopin-black.png"
+              src="/calendar.png"
               width={14}
               height={14}
               alt="pin"
               priority
               style={{ marginRight: "5px" }}
             />
-            <p>Minnesota, USA</p>
+            <p>{year}</p>
           </div>
         </div>
         <div className={styles.result_desc}>
-          <p>
-            Who wouldn’t want to store the memories of their loved ones? We
-            build a website for people to create books about their loved ones’
-            stories
-          </p>
+          <p> {desc.repeat(1000)}</p>
         </div>
       </Link>
     </li>
@@ -52,16 +59,34 @@ const Result = () => {
 };
 
 const SearchResultList = () => {
+  const [previews, setPreviews] = useState([] as Array<PostI>);
+
+  useEffect(() => {
+    const fetchPreviews = async () => {
+      try {
+        const response = await getRecentTarpits();
+        setPreviews(Object.values(response));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchPreviews();
+  }, []);
+
   return (
     <div className={styles.search_list}>
       <ul>
-        <Result />
-        <Result />
-        <Result />
-        <Result />
-        <Result />
-        <Result />
-        <Result />
+        {previews &&
+          previews.map((preview, index) => (
+            <PostPreview
+              key={preview.id}
+              id={preview.id ?? -1}
+              title={preview.title ?? ""}
+              year={preview.year ?? 0}
+              desc={preview.answers[0] ?? ""}
+            />
+          ))}
       </ul>
     </div>
   );
@@ -76,7 +101,7 @@ const Search = () => {
   );
 };
 
-const Info = () => {
+const Intro = () => {
   return (
     <div className={styles.info_container}>
       <Link href="/">
@@ -118,7 +143,7 @@ const Menu = () => {
 export default function Home() {
   return (
     <main className={styles.container}>
-      <Info />
+      <Intro />
       <Search />
       <Menu />
     </main>
