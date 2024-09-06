@@ -78,6 +78,7 @@
 
 .result:hover h3 {
   color: hsl(139, 21%, 40%);
+  text-decoration: underline;
 }
 
 .result a {

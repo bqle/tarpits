@@ -65,7 +65,7 @@ const SearchResultList = () => {
     const fetchPreviews = async () => {
       try {
         const response = await getRecentTarpits();
-        setPreviews(Object.values(response));
+        setPreviews(Object.values(response).reverse() as Array<PostI>);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
