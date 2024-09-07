@@ -118,8 +118,8 @@ const Intro = () => {
         <p style={{ margin: "0px" }}>
           Tarpits are ideas that on the surface seem like fantastic
           opportunities but is actually a trap for entrepreneurs. Many flock to
-          them for its appealing odor, often getting trapped in it, wasting
-          precious resources and time.
+          them because they're appealing on the surface. However, often getting
+          stuck in them, wasting precious resources and time.
           <br />
           <br />
           We’re collecting stories of tarpits you encountered on your business

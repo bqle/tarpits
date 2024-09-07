@@ -8,11 +8,8 @@ import {
   set,
   child,
   orderByChild,
-  limitToFirst,
   query,
   limitToLast,
-  startAt,
-  orderByKey,
   startAfter,
 } from "firebase/database";
 import type { PostI } from "./schema";
@@ -36,7 +33,12 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-function counterOperation(func: any): Promise<boolean> {
+
+interface CounterOpResult {
+  success: boolean;
+  postId?: number;
+}
+function counterOperation(func: any): Promise<CounterOpResult> {
   const counterRef = ref(db, "counter");
   return runTransaction(counterRef, (currentValue) => {
     if (currentValue === null) {
@@ -48,19 +50,19 @@ function counterOperation(func: any): Promise<boolean> {
       if (result.committed) {
         console.log("Transaction committed:", result.snapshot.val());
         func(result.snapshot.val());
-        return true;
+        return { success: true, postId: result.snapshot.val() };
       } else {
         console.log("Transaction not committed");
-        return false;
+        return { success: false };
       }
     })
     .catch((error) => {
       console.error("Transaction failed:", error);
-      return false;
+      return { success: false };
     });
 }
 
-function postTarpit(content: PostI): Promise<boolean> {
+function postTarpit(content: PostI): Promise<CounterOpResult> {
   const postWithId = (postId: number) => {
     content.id = postId;
     set(ref(db, `users/post/${postId}`), content);
@@ -92,7 +94,7 @@ async function getRecentTarpits(sinceExclusive: number = -1) {
     itemsRef,
     orderByChild("id"),
     startAfter(null),
-    limitToLast(5)
+    limitToLast(10)
   );
 
   const snapshot = await get(topItemsQuery);
@@ -105,3 +107,4 @@ async function getRecentTarpits(sinceExclusive: number = -1) {
 }
 
 export { app, postTarpit, getTarpit, getRecentTarpits };
+export type { CounterOpResult };

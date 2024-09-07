@@ -4,8 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "./createpost.module.css";
 import React, { useState } from "react";
-import { postTarpit } from "../../../utils/firebase";
+import { CounterOpResult, postTarpit } from "../../../utils/firebase";
 import { CookieSaver } from "@/components/CookieSaver";
+import { useRouter } from "next/navigation";
 
 function getAnswerElementId(id: number) {
   return `answer-${id}`;
@@ -146,7 +147,9 @@ function clearPostCookies() {
 }
 
 const SubmitForm = () => {
+  const router = useRouter();
   const [submitErrs, setSubmitErrs] = useState(Array<string>());
+  const [successfulPost, setSuccessfulPost] = useState(false);
 
   const handleSubmit: any = (e: MouseEvent) => {
     let title = (document.getElementById("post-title") as HTMLInputElement)
@@ -169,6 +172,8 @@ const SubmitForm = () => {
       if (yearNumber < 1900 || yearNumber > 2024) {
         errs.push("Make sure year is in a close range (1900-2024)");
       }
+    } else {
+      errs.push("Please note the year that you saw the tarpit");
     }
     if (emailValue) {
       if (!isValidEmail(emailValue)) {
@@ -184,9 +189,13 @@ const SubmitForm = () => {
         year: yearNumber,
         email: emailValue,
         answers: getAnswers(),
-      }).then((success) => {
-        if (success) {
+      }).then((counterOpResult: CounterOpResult) => {
+        if (counterOpResult.success) {
           clearPostCookies();
+          setSuccessfulPost(true);
+          setTimeout(() => {
+            router.push(`/post/${counterOpResult.postId!}`);
+          }, 1000);
         } else {
           alert("Unsuccessful post");
         }
@@ -210,13 +219,18 @@ const SubmitForm = () => {
           height={30}
           priority
         />
-        <p>Post</p>
+        <p className={styles.post_button}>Post</p>
         {submitErrs.length > 0 &&
           submitErrs.map((errStr, index) => (
-            <li className={styles.errorStr} key={index}>
+            <li className={styles.error_status} key={index}>
               {errStr}
             </li>
           ))}
+        {successfulPost && (
+          <p className={styles.success_status}>
+            Successfully saved your post. You will be redirected momentarily
+          </p>
+        )}
       </div>
     </div>
   );
