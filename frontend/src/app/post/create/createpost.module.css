@@ -114,7 +114,7 @@
   color: hsl(213, 90%, 20%);
 }
 
-.submit_form p {
+.post_button {
   margin: 0;
   font-size: 12px;
 }
@@ -127,6 +127,11 @@
   transform: scale(1.3);
 }
 
-.errorStr {
+.error_status {
   color: hsl(0, 70%, 60%);
+}
+
+.success_status {
+  color: hsl(106, 34%, 60%);
+  font-size: 18px;
 }

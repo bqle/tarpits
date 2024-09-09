@@ -2,9 +2,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./viewpost.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getTarpit } from "@/utils/firebase";
+import type { PostI } from "../../../utils/schema";
 
-const StatusColumn = () => {
+const LogoColumn = () => {
   return (
     <div className={styles.status_column}>
       <Link href="/" style={{ textDecoration: "none" }}>
@@ -18,9 +20,10 @@ const StatusColumn = () => {
 interface FormRowI {
   question: string;
   points: Array<string>;
+  answer: string;
 }
 
-const FormRow = ({ question, points }: FormRowI) => {
+const FormRow = ({ question, points, answer }: FormRowI) => {
   return (
     <div className={styles.form_row}>
       <div className={styles.form_question}>
@@ -31,34 +34,24 @@ const FormRow = ({ question, points }: FormRowI) => {
           ))}
         </ul>
       </div>
-      <p className={styles.form_answer}>
-        At vero eos et accusamus et iusto odio dignissimos ducimus qui
-        blanditiis praesentium voluptatum deleniti atque corrupti quos dolores
-        et quas molestias excepturi sint occaecati cupiditate non provident,
-        similique sunt in culpa qui officia deserunt mollitia animi, id est
-        laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita
-        distinctio. Nam libero tempore, cum soluta nobis
-        <br />
-        At vero eos et accusamus et iusto odio dignissimos ducimus qui
-        blanditiis praesentium voluptatum deleniti atque corrupti quos dolores
-        et quas molestias excepturi sint occaecati cupiditate non provident,
-        similique sunt in culpa qui officia deserunt mollitia animi, id est
-        laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita
-        distinctio. Nam libero tempore, cum soluta nobis
-      </p>
+      <p className={styles.form_answer}>{answer}</p>
     </div>
   );
 };
 
-const TarpitForm = (params: ViewPostI) => {
-  const { id } = params;
+interface TarpitFormI {
+  id: string;
+  title: string;
+  answers: Array<string>;
+}
+const TarpitForm = ({ id, title, answers }: TarpitFormI) => {
   return (
     <div className={styles.form}>
       {/* Header */}
       <div className={styles.form_header}>
         <div className={styles.flex_baseline}>
           <p>#{id}: </p>
-          <h1>Digitalized Gravestone</h1>
+          <h1>{title}</h1>
         </div>
       </div>
       {/* Row questions */}
@@ -69,6 +62,7 @@ const TarpitForm = (params: ViewPostI) => {
           "Team experience",
           "Key partnerships",
         ]}
+        answer={answers[0] ?? ""}
       />
       <FormRow
         question="What was your idea?"
@@ -78,6 +72,7 @@ const TarpitForm = (params: ViewPostI) => {
           "Growth potential",
           "Unit economics",
         ]}
+        answer={answers[1] ?? ""}
       />
       <FormRow
         question="What was the surrounding business environment?"
@@ -86,6 +81,7 @@ const TarpitForm = (params: ViewPostI) => {
           "Consumer trends",
           "Any relevant factors outside your control",
         ]}
+        answer={answers[2] ?? ""}
       />
       <FormRow
         question="What is your party story?"
@@ -94,6 +90,7 @@ const TarpitForm = (params: ViewPostI) => {
           "Vital moments for the team",
           "When did you consider quitting?",
         ]}
+        answer={answers[3] ?? ""}
       />
       <FormRow
         question="What lessons would you pass on to future founders?"
@@ -102,18 +99,24 @@ const TarpitForm = (params: ViewPostI) => {
           "Actions that could have been taken",
           "Decisions that would have been made differently",
         ]}
+        answer={answers[3] ?? ""}
       />
     </div>
   );
 };
 
-const ActionForm = () => {
+interface ActionFormI {
+  year: string;
+  email: string;
+}
+
+const ActionForm = ({ year, email }: ActionFormI) => {
   const [showPopup, setShowPopup] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
 
   const handleCopy: any = (e: MouseEvent) => {
     navigator.clipboard
-      .writeText("Copied text")
+      .writeText(window.location.href)
       .then(() => {
         const x = e.clientX;
         const y = e.clientY;
@@ -131,9 +134,8 @@ const ActionForm = () => {
 
   return (
     <div className={styles.submit_form}>
-      <p>US</p>
-      <p>2025</p>
-      <p>bqle@seas.upenn.edu</p>
+      <p>{year}</p>
+      <p>{email}</p>
       <Image
         onClick={handleCopy}
         src="/copy-link.png"
@@ -160,14 +162,57 @@ const ActionForm = () => {
 interface ViewPostI {
   id: string;
 }
+
+enum LoadingState {
+  LOADING = 0,
+  SUCCESS = 1,
+  ERROR = -1,
+}
+
 export default function ViewPost({ params }: { params: ViewPostI }) {
   const { id } = params;
+  const [loadingState, setLoadingState] = useState(LoadingState.LOADING);
+  const [year, setYear] = useState("");
+  const [email, setEmail] = useState("");
+  const [title, setTitle] = useState("");
+  const [answers, setAnswers] = useState([] as Array<string>);
+
+  useEffect(() => {
+    const idNumber: number = parseInt(id);
+    if (!idNumber) {
+      setLoadingState(LoadingState.ERROR);
+      return;
+    }
+
+    getTarpit(idNumber).then((content: PostI | null) => {
+      if (!content || !content.answers) {
+        setLoadingState(LoadingState.ERROR);
+        return;
+      }
+
+      setYear(content.year ? String(content.year) : "");
+      setEmail(content.email ?? "");
+      setTitle(content.title ?? "");
+      setAnswers(content.answers);
+      setLoadingState(LoadingState.SUCCESS);
+    });
+  }, [id]);
 
   return (
     <main className={styles.container}>
-      <StatusColumn />
-      <TarpitForm id={id} />
-      <ActionForm />
+      <LogoColumn />
+      {loadingState === LoadingState.SUCCESS && (
+        <TarpitForm id={id} title={title} answers={answers} />
+      )}
+      {loadingState === LoadingState.SUCCESS && (
+        <ActionForm year={year} email={email} />
+      )}
+      {loadingState === LoadingState.ERROR && (
+        <div>
+          <h3>Sorry! Your post could not be found</h3>
+          <h3>&lt;------</h3>
+        </div>
+      )}
     </main>
   );
 }

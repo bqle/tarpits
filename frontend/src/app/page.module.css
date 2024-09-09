@@ -78,6 +78,7 @@
 
 .result:hover h3 {
   color: hsl(139, 21%, 40%);
+  text-decoration: underline;
 }
 
 .result a {
@@ -89,6 +90,8 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
+  box-sizing: border-box;
+  padding-left: 10px;
   width: 100%;
 }
 
@@ -111,10 +114,20 @@
 .result_desc {
   font-size: 14px;
   margin-top: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .result_desc p {
   margin: 0px;
+  width: 100%;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  text-overflow: ellipsis;
 }
 
 .search_list ul {
