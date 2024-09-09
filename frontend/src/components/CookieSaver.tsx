@@ -25,7 +25,7 @@ const CookieSaver = ({ children, elementId }: CookieSaverI) => {
     if (inputRef.current && savedValue) {
       inputRef.current.value = savedValue;
     }
-  }, []);
+  }, [elementId]);
 
   const child = React.Children.only(children);
   return React.cloneElement(child as React.ReactElement<any>, {

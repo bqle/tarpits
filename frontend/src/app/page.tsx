@@ -122,9 +122,10 @@ const Intro = () => {
           stuck in them, wasting precious resources and time.
           <br />
           <br />
-          We’re collecting stories of tarpits you encountered on your business
-          journeys. We’d love to hear the ups and downs, why the idea attracted
-          you in the first place, and why you think this was a tarpit.
+          We&apos;re collecting stories of tarpits you encountered on your
+          business journeys. We&apos;d love to hear the ups and downs, why the
+          idea attracted you in the first place, and why you think this was a
+          tarpit.
         </p>
       </div>
     </div>

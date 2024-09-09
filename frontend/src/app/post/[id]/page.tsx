@@ -196,7 +196,7 @@ export default function ViewPost({ params }: { params: ViewPostI }) {
       setAnswers(content.answers);
       setLoadingState(LoadingState.SUCCESS);
     });
-  }, []);
+  }, [id]);
 
   return (
     <main className={styles.container}>
