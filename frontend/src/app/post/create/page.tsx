@@ -228,7 +228,8 @@ const SubmitForm = () => {
           ))}
         {successfulPost && (
           <p className={styles.success_status}>
-            Successfully saved your post. You will be redirected momentarily
+            Successfully saved your post. You will be redirected to your post
+            momentarily
           </p>
         )}
       </div>

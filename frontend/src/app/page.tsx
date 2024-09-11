@@ -117,15 +117,17 @@ const Intro = () => {
       <div className={styles.info_desc}>
         <p style={{ margin: "0px" }}>
           Tarpits are ideas that on the surface seem like fantastic
-          opportunities but is actually a trap for entrepreneurs. Many flock to
-          them because they&apos;re appealing on the surface. However, often getting
-          stuck in them, wasting precious resources and time.
+          opportunities but is actually a trap for entrepreneurs. Many
+          entrepreneurs are attracted because the opportunity seem wide-open for
+          the taking. However, that is only so because countless companies
+          before have tried the idea & haven&apos;t had the platform to tell the
+          tale.
           <br />
           <br />
           We&apos;re collecting stories of tarpits you encountered on your
           business journeys. We&apos;d love to hear the ups and downs, why the
-          idea attracted you in the first place, and why you think this was a
-          tarpit.
+          idea attracted you in the first place, and the complications you
+          encountered getting your hands dirty.
         </p>
       </div>
     </div>
