@@ -70,7 +70,6 @@ const SearchResultList = () => {
         console.error("Error fetching data:", error);
       }
     };
-
     fetchPreviews();
   }, []);
 
@@ -87,6 +86,9 @@ const SearchResultList = () => {
               desc={preview.answers[0] ?? ""}
             />
           ))}
+        {previews.length === 0 && (
+          <p className={styles.waiting}>Fetching posts...</p>
+        )}
       </ul>
     </div>
   );
