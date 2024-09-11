@@ -84,9 +84,9 @@ const TarpitForm = ({ id, title, answers }: TarpitFormI) => {
         answer={answers[2] ?? ""}
       />
       <FormRow
-        question="What is your party story?"
+        question="What was a key moment in the life of your company?"
         points={[
-          "Key milestones",
+          "Milestone achievements",
           "Vital moments for the team",
           "When did you consider quitting?",
         ]}
