@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./page.module.css";
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { getRecentTarpits } from "@/utils/firebase";
 import { PostI } from "@/utils/schema";
 
@@ -58,21 +58,11 @@ const PostPreview = ({ id, title, year, desc }: PostPreviewI) => {
   );
 };
 
-const SearchResultList = () => {
-  const [previews, setPreviews] = useState([] as Array<PostI>);
+interface SearchResultListI {
+  previews: Array<PostI>;
+}
 
-  useEffect(() => {
-    const fetchPreviews = async () => {
-      try {
-        const response = await getRecentTarpits();
-        setPreviews(Object.values(response).reverse() as Array<PostI>);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchPreviews();
-  }, []);
-
+const SearchResultList: FC<SearchResultListI> = ({ previews }) => {
   return (
     <div className={styles.search_list}>
       <ul>
@@ -94,11 +84,14 @@ const SearchResultList = () => {
   );
 };
 
-const Search = () => {
+interface SearchI {
+  previews: Array<PostI>;
+}
+const Search: FC<SearchI> = ({ previews }) => {
   return (
     <div className={styles.search_container}>
       <SearchBar />
-      <SearchResultList />
+      <SearchResultList previews={previews} />
     </div>
   );
 };
@@ -129,16 +122,24 @@ const Intro = () => {
           We&apos;re collecting stories of tarpits you encountered on your
           business journeys. We&apos;d love to hear the ups and downs, why the
           idea attracted you in the first place, and the complications you
-          encountered getting your hands dirty.
+          encountered while getting your hands dirty.
         </p>
       </div>
     </div>
   );
 };
 
-const Menu = () => {
+interface MenuI {
+  isVisible: boolean;
+}
+const Menu: FC<MenuI> = ({ isVisible }) => {
+  console.log(isVisible);
   return (
-    <div className={styles.menu}>
+    <div
+      id="menu"
+      style={{ visibility: isVisible ? "visible" : "hidden" }}
+      className={styles.menu}
+    >
       <Link href="/post/create">
         <Image src="/writing.png" height={20} width={20} alt="Add" priority />
       </Link>
@@ -146,11 +147,27 @@ const Menu = () => {
   );
 };
 export default function Home() {
+  const [previews, setPreviews] = useState([] as Array<PostI>);
+  const [isMenuVisible, setIsMenuVisbile] = useState(false);
+
+  useEffect(() => {
+    const fetchPreviews = async () => {
+      try {
+        const response = await getRecentTarpits();
+        setPreviews(Object.values(response).reverse() as Array<PostI>);
+        setIsMenuVisbile(true);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchPreviews();
+  }, []);
+
   return (
     <main className={styles.container}>
       <Intro />
-      <Search />
-      <Menu />
+      <Search previews={previews} />
+      <Menu isVisible={isMenuVisible} />
     </main>
   );
 }
