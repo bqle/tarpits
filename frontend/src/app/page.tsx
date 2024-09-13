@@ -133,7 +133,6 @@ interface MenuI {
   isVisible: boolean;
 }
 const Menu: FC<MenuI> = ({ isVisible }) => {
-  console.log(isVisible);
   return (
     <div
       id="menu"
